@@ -22,6 +22,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   if (!isOpen) return null;
 
+  const handleClose = () => {
+    setCompletedOrder(null);
+    setErrorMessage(null);
+    onClose();
+  };
+
   const shippingCost = cartTotal >= 50 || cart.length === 0 ? 0 : 9.90;
   const grandTotal = cartTotal + shippingCost;
 
@@ -63,7 +69,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </p>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-1.5 text-stone-400 hover:text-stone-700 hover:bg-stone-100 rounded-lg transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
@@ -113,8 +119,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  onClose();
-                  onOrderCompleted(completedOrder.id);
+                  const orderId = completedOrder.id;
+                  handleClose();
+                  onOrderCompleted(orderId);
                 }}
                 className="flex-1 py-2.5 px-4 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition-colors cursor-pointer"
               >
@@ -122,7 +129,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </button>
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="py-2.5 px-4 text-xs font-semibold text-stone-700 bg-stone-100 hover:bg-stone-200 rounded-xl transition-colors cursor-pointer"
               >
                 Voltar ao Mercado

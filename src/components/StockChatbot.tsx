@@ -26,6 +26,7 @@ export const StockChatbot: React.FC = () => {
   };
 
   const handleChipClick = (query: string) => {
+    if (isChatLoading) return;
     sendChatMessage(query);
   };
 

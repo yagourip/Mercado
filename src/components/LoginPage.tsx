@@ -345,17 +345,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
               </button>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => handleQuickDemo('seller-1')}
                   className="p-2 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 flex items-center justify-between text-xs transition-colors cursor-pointer text-left"
                 >
                   <div>
-                    <p className="font-bold text-amber-950">Carlos (Fazenda Fresca)</p>
-                    <p className="text-[10px] text-amber-700">Hortifrúti Orgânico</p>
+                    <p className="font-bold text-amber-950 truncate max-w-[120px]">Carlos</p>
+                    <p className="text-[10px] text-amber-700 truncate max-w-[120px]">Fazenda Fresca</p>
                   </div>
-                  <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-600 shrink-0 ml-1" />
                 </button>
 
                 <button
@@ -364,10 +364,22 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess }) => {
                   className="p-2 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 flex items-center justify-between text-xs transition-colors cursor-pointer text-left"
                 >
                   <div>
-                    <p className="font-bold text-amber-950">Helena (Pães Artesanais)</p>
-                    <p className="text-[10px] text-amber-700">Padaria & Confeitaria</p>
+                    <p className="font-bold text-amber-950 truncate max-w-[120px]">Helena</p>
+                    <p className="text-[10px] text-amber-700 truncate max-w-[120px]">Pães Artesanais</p>
                   </div>
-                  <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-600 shrink-0 ml-1" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleQuickDemo('seller-3')}
+                  className="p-2 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 flex items-center justify-between text-xs transition-colors cursor-pointer text-left"
+                >
+                  <div>
+                    <p className="font-bold text-amber-950 truncate max-w-[120px]">Marcos</p>
+                    <p className="text-[10px] text-amber-700 truncate max-w-[120px]">Empório & Carnes</p>
+                  </div>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-600 shrink-0 ml-1" />
                 </button>
               </div>
             )}

@@ -340,6 +340,24 @@ export const MarketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setProducts(prev =>
       prev.map(p => (p.id === productId ? { ...p, ...updates } : p))
     );
+    setCart(prev =>
+      prev
+        .map(item => {
+          if (item.product.id === productId) {
+            const updatedProd = { ...item.product, ...updates };
+            const newQty = updates.stock !== undefined && item.quantity > updates.stock 
+              ? updates.stock 
+              : item.quantity;
+            return {
+              ...item,
+              product: updatedProd,
+              quantity: newQty
+            };
+          }
+          return item;
+        })
+        .filter(item => item.quantity > 0)
+    );
   };
 
   // Seller: Delete product

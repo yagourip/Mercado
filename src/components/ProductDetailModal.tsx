@@ -9,19 +9,21 @@ interface ProductDetailModalProps {
 }
 
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product, onClose }) => {
-  const { addToCart, setIsChatOpen, sendChatMessage } = useMarket();
+  const { products, addToCart, setIsChatOpen, sendChatMessage } = useMarket();
   const [quantity, setQuantity] = useState(1);
   const [addedSuccess, setAddedSuccess] = useState(false);
   const [errorNotice, setErrorNotice] = useState<string | null>(null);
 
   if (!product) return null;
 
-  const isOutOfStock = product.stock <= 0;
-  const isLowStock = product.stock > 0 && product.stock <= 5;
+  // Retrieve latest live product instance to guarantee up-to-date stock and price
+  const liveProduct = products.find(p => p.id === product.id) || product;
+  const isOutOfStock = liveProduct.stock <= 0;
+  const isLowStock = liveProduct.stock > 0 && liveProduct.stock <= 5;
 
   const handleAddToCart = () => {
     setErrorNotice(null);
-    const res = addToCart(product, quantity);
+    const res = addToCart(liveProduct, quantity);
     if (!res.success) {
       setErrorNotice(res.message || 'Quantidade não disponível em estoque.');
       return;
@@ -36,7 +38,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
   const handleAskChatbot = () => {
     onClose();
     setIsChatOpen(true);
-    sendChatMessage(`Quantas unidades de "${product.name}" temos em estoque e qual o valor?`);
+    sendChatMessage(`Quantas unidades de "${liveProduct.name}" temos em estoque e qual o valor?`);
   };
 
   return (
@@ -48,14 +50,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
         {/* Left Column: Image */}
         <div className="md:w-1/2 relative bg-stone-100 min-h-[260px] md:min-h-full">
           <img
-            src={product.image}
-            alt={product.name}
+            src={liveProduct.image}
+            alt={liveProduct.name}
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover object-center"
           />
           <button
             onClick={onClose}
-            className="md:hidden absolute top-3 right-3 p-1.5 bg-white/90 text-stone-700 rounded-full shadow-md"
+            className="md:hidden absolute top-3 right-3 p-1.5 bg-white/90 text-stone-700 rounded-full shadow-md cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -66,33 +68,33 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
           <div>
             <div className="flex items-center justify-between mb-2">
               <span className="text-xs uppercase font-semibold text-emerald-800 tracking-wider">
-                {product.category}
+                {liveProduct.category}
               </span>
               <button
                 onClick={onClose}
-                className="hidden md:block p-1 text-stone-400 hover:text-stone-700 rounded-lg"
+                className="hidden md:block p-1 text-stone-400 hover:text-stone-700 rounded-lg cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <h2 className="text-lg font-bold text-stone-900 leading-snug">
-              {product.name}
+              {liveProduct.name}
             </h2>
 
             {/* Seller attribution */}
             <div className="flex items-center gap-2 text-xs text-stone-500 mt-2">
               <Store className="w-3.5 h-3.5 text-stone-400" />
-              <span>Vendido por: <strong className="text-stone-800 font-semibold">{product.sellerName}</strong></span>
+              <span>Vendido por: <strong className="text-stone-800 font-semibold">{liveProduct.sellerName}</strong></span>
             </div>
 
             {/* Price */}
             <div className="mt-4 flex items-baseline gap-1.5">
               <span className="text-sm font-medium text-stone-500">R$</span>
               <span className="text-3xl font-extrabold text-stone-900 font-mono tabular-nums">
-                {product.price.toFixed(2).replace('.', ',')}
+                {liveProduct.price.toFixed(2).replace('.', ',')}
               </span>
-              <span className="text-xs text-stone-400">/ {product.unit}</span>
+              <span className="text-xs text-stone-400">/ {liveProduct.unit}</span>
             </div>
 
             {/* Stock details */}
@@ -105,7 +107,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-stone-700">Disponibilidade:</span>
                   <span className={isLowStock ? 'text-amber-700 font-bold' : 'text-emerald-700 font-medium'}>
-                    {product.stock} {product.unit} disponíveis
+                    {liveProduct.stock} {liveProduct.unit} disponíveis
                   </span>
                   {isLowStock && (
                     <span className="text-[10px] text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded">
@@ -118,7 +120,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
 
             {/* Description */}
             <p className="mt-4 text-xs text-stone-600 leading-relaxed border-t border-stone-100 pt-3">
-              {product.description}
+              {liveProduct.description}
             </p>
           </div>
 
@@ -147,8 +149,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                   </span>
                   <button
                     type="button"
-                    onClick={() => setQuantity(q => Math.min(product.stock, q + 1))}
-                    disabled={quantity >= product.stock}
+                    onClick={() => setQuantity(q => Math.min(liveProduct.stock, q + 1))}
+                    disabled={quantity >= liveProduct.stock}
                     className="p-2 hover:bg-stone-200 text-stone-600 disabled:opacity-40 cursor-pointer"
                   >
                     <Plus className="w-4 h-4" />
@@ -170,7 +172,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({ product,
                   ) : (
                     <>
                       <ShoppingBag className="w-4 h-4" />
-                      <span>Adicionar ao Carrinho (R$ {(product.price * quantity).toFixed(2).replace('.', ',')})</span>
+                      <span>Adicionar ao Carrinho (R$ {(liveProduct.price * quantity).toFixed(2).replace('.', ',')})</span>
                     </>
                   )}
                 </button>
